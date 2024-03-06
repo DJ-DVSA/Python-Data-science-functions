@@ -41,6 +41,28 @@ def generate_html():
     # Render HTML template with notebook content
     return render_template_string(body)
 
+### Generate Pandas file
+# Route to generate and display HTML from Jupyter notebook content
+@app.route('/pandas')
+def generate_html_pandas():
+    # Convert Jupyter notebook content to HTML
+    #nb = nbformat.reads(notebook_content, as_version=4)
+    # with open('example_notebook.ipynb', 'r', encoding='utf-8') as f:
+    #     notebook_content = f.read()
+    
+    # Open Notebook files with pandas in the file name
+        
+    # Add additional note book content
+    html_content = "<h2> Pandas Related functions </h2>"
+    body = html_content
+
+    ## Generate HTML file from this page
+    with open('templates/pandas.html', 'w', encoding='utf-8') as f:
+        f.write(body)
+
+    # Render HTML template with notebook content
+    return render_template_string(body)
+
 if __name__ == '__main__':
     app.run(debug=True)
 
