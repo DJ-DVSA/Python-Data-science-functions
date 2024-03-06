@@ -18,6 +18,13 @@ def generate_html():
     # Add additional note book content
     html_content = "<h2> Some headers and stuff </h2>"
     body = html_content
+    
+    ### Links
+    links = """
+    <ul>
+        <li><a href="templates/pandas.html">Pandas</a></li>
+    </ul>"""
+    
         
     # Convert JuPyTer Notebook to html    
     nb = nbformat.reads(notebook_content, as_version=4)     
@@ -25,6 +32,7 @@ def generate_html():
     (body_nb, resources) = html_exporter.from_notebook_node(nb)
 
     body += body_nb
+    body += links
     
     ## Generate HTML file from this page
     with open('index.html', 'w', encoding='utf-8') as f:
