@@ -6,4 +6,5 @@ The aim of this repo is to act as a quick reference for useful pieces of Python 
 The Flask app will read code, markdown and outputs from JuPyTer notebooks and append it to the relevant page. The notebook name should contain reference to main Python library that the code uses (i.e., pandas, matplotlib)
 
 Check out the site [here](https://dj-dvsa.github.io/Python-Data-science-functions/)
+
 Note: Though this application will run as a dynamic Flask app, the hyperlinks on the main page will not work properly. 
