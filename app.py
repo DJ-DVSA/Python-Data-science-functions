@@ -23,13 +23,22 @@ def get_files_with_string_in_name(directory, string):
 cwd = os.getcwd()
 pandas_files = get_files_with_string_in_name(f"{cwd}/Notebooks/", "pandas.ipynb")
 matplotlib_files = get_files_with_string_in_name(f"{cwd}/Notebooks/", "matplotlib.ipynb")
+seaborn_files = get_files_with_string_in_name(f"{cwd}/Notebooks/", "seaborn.ipynb")
 
 ## Get html code from note books -----------------------------------------------------------------------------##
 def html_from_nbs(filenames):
     body = ''
+    href_list = ''
     ## Open and convert pandas notebook files and append to body
-    for nx in filenames:
-        body += f'<h2>Notebook File: {nx}</h2>'
+    for idx, nx in enumerate(filenames):
+        body += f'''
+        <hr>
+        <h2 id=section{idx} style="color:DodgerBlue;font-family:verdana;">Notebook File: {nx}</h2>
+        '''
+        
+        href_list += f'''
+        <li><a href="#section{idx}">{nx}</li>
+        '''
         
         with open(f'Notebooks/{nx}', 'r', encoding='utf-8') as f:
             notebook_content = f.read()
@@ -40,20 +49,28 @@ def html_from_nbs(filenames):
         
         body += body_nb
         
+    body = "<h3> Contents </h3>" + f'''
+    <nav>
+        <ul>
+            {href_list}
+        </ul>
+    </nav>
+    ''' + body
+        
     return body
 
 # Route to generate and display HTML from Jupyter notebook content
 @app.route('/')
 def generate_html():
     
-    ### Create Pandas Page
+    ### Create Pandas Page --------------------------------------------------- # 
     html_content_start_pd = """<!-- base.html -->
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>{{ title }}</title>
-        <link rel="stylesheet" type="text/css" href="static/styles.css">
+        <link rel="stylesheet" type="text/css" href="../static/styles.css">
     </head>
     <h1> A Page of Pandas Related Code </h1>
     <body>"""
@@ -74,7 +91,51 @@ def generate_html():
         f.write(render_template_string(body_pd))    
     
     
-    ### Create MatPlotLib Page
+    ### Create MatPlotLib Page --------------------------------------------------- # 
+    html_content_start_mpl = """<!-- base.html -->
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ title }}</title>
+        <link rel="stylesheet" type="text/css" href="../static/styles.css">
+    </head>
+    <h1> A Page of MatPlotLib Related Code </h1>
+    <body>"""
+    
+    body_mpl1 = html_from_nbs(matplotlib_files)  
+    
+    body_mpl = html_content_start_mpl      
+    body_mpl += body_mpl1
+   
+    body_mpl += html_content_end_pd    
+
+    ## Generate HTML file from this page
+    with open('templates/matplotlib.html', 'w', encoding='utf-8') as f:
+        f.write(render_template_string(body_mpl))      
+    
+    ### Create Seaborn Page ------------------------------------------------------ # 
+    html_content_start_sb = """<!-- base.html -->
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ title }}</title>
+        <link rel="stylesheet" type="text/css" href="../static/styles.css">
+    </head>
+    <h1> A Page of Seaborn Related Code </h1>
+    <body>"""    
+
+    body_sb1 = html_from_nbs(seaborn_files)  
+    
+    body_sb = html_content_start_sb      
+    body_sb += body_sb1
+   
+    body_sb += html_content_end_pd    
+
+    ## Generate HTML file from this page
+    with open('templates/seaborn.html', 'w', encoding='utf-8') as f:
+        f.write(render_template_string(body_sb))     
     
     
     
@@ -123,21 +184,41 @@ def generate_html():
 @app.route('/pandas')
 def generate_html_pandas():
 
-    html_content = "<h2> Pandas Related functions </h2>"
-    body = html_content
-    
     with app.open_resource('templates/pandas.html', 'r') as f:
         pandas_html = f.read()
         
-    body += pandas_html
+    body = pandas_html
     
     return render_template_string(body)
+
+### Generate MatPlotLib file
+# Route to generate and Pandas page when viewing as Flask application
+@app.route('/matplotlib')
+def generate_html_matplotlib():
+
+    with app.open_resource('templates/matplotlib.html', 'r') as f:
+        matplotlib_html = f.read()
+        
+    body = matplotlib_html
+    
+    return render_template_string(body)
+
+### Generate Seaborn file
+# Route to generate and Pandas page when viewing as Flask application
+@app.route('/seaborn')
+def generate_html_seaborn():
+
+    with app.open_resource('templates/seaborn.html', 'r') as f:
+        matplotlib_html = f.read()
+        
+    body = matplotlib_html
+    
+    return render_template_string(body)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-# @app.route('/matplotlib')
-# def about():
-#     return render_template('matplotlib.html')
+
 
 
